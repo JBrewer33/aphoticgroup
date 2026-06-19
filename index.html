@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aphotic Group</title>
+<meta name="description" content="Aphotic Group — technology, software, and security.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; background:#010407; }
+  .stage{
+    position:relative; width:100%; height:100vh; min-height:100vh; overflow:hidden;
+    background:radial-gradient(120% 100% at 50% 30%, #061520 0%, #03101a 36%, #020a11 64%, #01060a 100%);
+  }
+  .layer{ position:absolute; pointer-events:none; }
+  .murk{
+    inset:-12%; filter:blur(34px); animation:murkdrift 38s ease-in-out infinite alternate;
+    background:
+      radial-gradient(40% 50% at 28% 22%, rgba(18,46,62,0.55), transparent 60%),
+      radial-gradient(52% 60% at 76% 70%, rgba(34,28,62,0.48), transparent 60%),
+      radial-gradient(46% 56% at 60% 44%, rgba(14,50,60,0.42), transparent 62%);
+  }
+  .presence{
+    left:50%; top:84%; width:1500px; height:1500px; transform:translate(-50%,-50%);
+    border-radius:50%; filter:blur(44px); animation:presenceswell 17s ease-in-out infinite;
+    background:radial-gradient(circle, rgba(34,62,82,0.24) 0%, rgba(22,30,58,0.12) 34%, transparent 60%);
+  }
+  .rays{
+    top:-22%; left:-30%; width:160%; height:130%; transform-origin:top center;
+    filter:blur(26px); mix-blend-mode:screen; animation:raysway 26s ease-in-out infinite;
+    background:repeating-linear-gradient(100deg, transparent 0 130px, rgba(120,160,205,0.055) 158px 184px, transparent 214px 360px);
+  }
+  #snow{ inset:0; width:100%; height:100%; }
+  .vignette{
+    inset:0;
+    background:radial-gradient(ellipse 76% 72% at 50% 44%, transparent 28%, rgba(1,5,9,0.62) 72%, rgba(0,2,4,0.97) 100%);
+  }
+  .content{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:64px;
+  }
+  .wordmark{
+    animation:textbreathe 11s ease-in-out infinite;
+    font-family:'Spectral',serif; font-weight:300; font-size:58px;
+    letter-spacing:0.34em; text-transform:uppercase; line-height:1;
+    color:rgba(128,146,170,0.62); text-shadow:0 0 44px rgba(64,86,166,0.32);
+    padding-left:0.34em;
+  }
+  .rule{ width:46px; height:1px; background:rgba(110,140,180,0.3); margin:38px 0 0 0; }
+  .email{
+    margin-top:34px; font-family:'JetBrains Mono',monospace; font-size:12px;
+    letter-spacing:0.18em; color:rgba(96,116,138,0.6); text-decoration:none;
+    transition:color 0.6s ease;
+  }
+  .email:hover{ color:rgba(150,180,210,0.85); }
+
+  @keyframes murkdrift{ 0%{ transform:scale(1.02) translate(0,0); } 100%{ transform:scale(1.14) translate(-3%,-2.5%); } }
+  @keyframes raysway{ 0%,100%{ transform:translateX(-26px) rotate(0.6deg); opacity:.5; } 50%{ transform:translateX(26px) rotate(-0.6deg); opacity:.8; } }
+  @keyframes presenceswell{ 0%,100%{ opacity:.35; transform:translate(-50%,-50%) scale(1); } 50%{ opacity:.75; transform:translate(-50%,-52%) scale(1.12); } }
+  @keyframes textbreathe{ 0%,100%{ opacity:.40; } 50%{ opacity:.72; } }
+
+  @media (max-width:640px){
+    .wordmark{ font-size:34px; letter-spacing:0.22em; padding-left:0.22em; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .murk,.rays,.presence,.wordmark{ animation:none; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="layer murk"></div>
+    <div class="layer presence"></div>
+    <div class="layer rays"></div>
+    <canvas class="layer" id="snow"></canvas>
+    <div class="layer vignette"></div>
+    <div class="content">
+      <div class="wordmark">Aphotic&nbsp;&nbsp;Group</div>
+      <div class="rule"></div>
+      <a class="email" href="mailto:admin@aphoticgroup.com">admin@aphoticgroup.com</a>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var cv = document.getElementById('snow');
+  var ctx = cv.getContext('2d');
+  var w = 0, h = 0, dpr = 1, parts = [];
+
+  function mk(init){
+    var lum = Math.random() < 0.12;
+    var depth = Math.random();
+    return {
+      x: Math.random() * w,
+      y: init ? Math.random() * h : -10,
+      r: lum ? (1.2 + Math.random() * 1.8) : (0.5 + depth * 1.8),
+      vy: 0.10 + depth * 0.45,
+      vx: (Math.random() - 0.5) * 0.18,
+      sw: 0.3 + Math.random() * 0.6,
+      ph: Math.random() * 6.28,
+      a: lum ? (0.35 + Math.random() * 0.4) : (0.05 + depth * 0.22),
+      lum: lum,
+      pulse: 0.5 + Math.random() * 1.1,
+      col: lum ? (Math.random() < 0.5 ? 'rgba(120,140,235,1)' : 'rgba(88,198,214,1)') : 'rgba(150,174,190,1)'
+    };
+  }
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var r = cv.getBoundingClientRect();
+    w = r.width; h = r.height;
+    cv.width = Math.max(1, w * dpr);
+    cv.height = Math.max(1, h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (var i = 0; i < 110; i++) parts.push(mk(true));
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var t0 = performance.now();
+
+  function loop(now){
+    var t = (now - t0) / 1000;
+    ctx.clearRect(0, 0, w, h);
+    for (var k = 0; k < parts.length; k++){
+      var p = parts[k];
+      if (!reduce){
+        p.y += p.vy;
+        p.x += p.vx + Math.sin(t * p.sw + p.ph) * 0.14;
+        if (p.y > h + 12){ parts[k] = p = mk(false); }
+        if (p.x < -12) p.x = w + 12;
+        if (p.x > w + 12) p.x = -12;
+      }
+      var a = p.a;
+      if (p.lum){
+        a = p.a * (0.45 + 0.55 * Math.sin(t * p.pulse + p.ph));
+        ctx.shadowBlur = p.r * 7;
+        ctx.shadowColor = p.col;
+      } else {
+        ctx.shadowBlur = 0;
+      }
+      ctx.globalAlpha = Math.max(0, a);
+      ctx.fillStyle = p.col;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
