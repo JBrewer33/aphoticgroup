@@ -12,7 +12,7 @@
   *{ box-sizing:border-box; }
   html,body{ margin:0; height:100%; background:#010407; }
   .stage{
-    position:relative; width:100%; height:100vh; min-height:100vh; overflow:hidden;
+    position:relative; width:100%; height:100vh; height:100dvh; min-height:100vh; min-height:100dvh; overflow:hidden;
     background:radial-gradient(120% 100% at 50% 30%, #061520 0%, #03101a 36%, #020a11 64%, #01060a 100%);
   }
   .layer{ position:absolute; pointer-events:none; }
@@ -40,11 +40,11 @@
   }
   .content{
     position:absolute; inset:0; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; text-align:center; padding:64px;
+    align-items:center; justify-content:center; text-align:center; padding:32px;
   }
   .wordmark{
     animation:textbreathe 11s ease-in-out infinite;
-    font-family:'Spectral',serif; font-weight:300; font-size:58px;
+    font-family:'Spectral',serif; font-weight:300; font-size:clamp(30px, 9vw, 58px);
     letter-spacing:0.34em; text-transform:uppercase; line-height:1;
     color:rgba(128,146,170,0.62); text-shadow:0 0 44px rgba(64,86,166,0.32);
     padding-left:0.34em;
@@ -63,7 +63,7 @@
   @keyframes textbreathe{ 0%,100%{ opacity:.40; } 50%{ opacity:.72; } }
 
   @media (max-width:640px){
-    .wordmark{ font-size:34px; letter-spacing:0.22em; padding-left:0.22em; }
+    .wordmark{ letter-spacing:0.22em; padding-left:0.22em; }
   }
   @media (prefers-reduced-motion:reduce){
     .murk,.rays,.presence,.wordmark{ animation:none; }
